@@ -1,8 +1,10 @@
 {
   "profile": {
-    "name": "LiRyzz",
+    "name": "Vivy Flourite",
     "bio": "Official Links & Community Channels",
-    "avatar": "https://raw.githubusercontent.com/ryzz-adminjb/LiRyzz/main/uploads/img_1794453090489.jpeg"
+    "avatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&q=80",
+    "bgType": "color",
+    "bgValue": "#f4f4f6"
   },
   "blocks": [
     {
@@ -13,32 +15,11 @@
       "url": ""
     },
     {
-      "id": 1794453322510,
-      "type": "banner",
-      "title": "",
-      "image": "https://raw.githubusercontent.com/ryzz-adminjb/LiRyzz/main/uploads/img_1794453238496.jpg",
-      "url": "https://chat.whatsapp.com/IhelDsFWlJBCtfoImJLT3e"
-    },
-    {
       "id": 2,
       "type": "link",
-      "title": "WhatsApp Grub",
+      "title": "WhatsApp Channel Utama",
       "image": "",
-      "url": "https://chat.whatsapp.com/IhelDsFWlJBCtfoImJLT3e"
-    },
-    {
-      "id": 3,
-      "type": "link",
-      "title": "WhatsApp Channel",
-      "image": "",
-      "url": "https://whatsapp.com/channel/0029Vb8MSNRD38CUmkWdJI3v"
-    },
-    {
-      "id": 4,
-      "type": "banner",
-      "title": "",
-      "image": "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=700&q=80",
-      "url": "https://chat.whatsapp.com/DeN9I4BpZ6ECyR3kovATt3"
+      "url": "https://whatsapp.com/channel/0029VbBiBeKElagwdrQ9c23j"
     }
   ]
 }
