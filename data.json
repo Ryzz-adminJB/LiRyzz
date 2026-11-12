@@ -8,25 +8,32 @@
   },
   "blocks": [
     {
-      "id": 1,
+      "id": 1794454679172,
       "type": "banner",
       "title": "",
-      "image": "https://images.unsplash.com/photo-1557683316-973673baf926?w=700&q=80",
+      "image": "https://raw.githubusercontent.com/ryzz-adminjb/LiRyzz/main/uploads/media_1794454640624.jpg",
       "url": ""
     },
     {
-      "id": 2,
+      "id": 1794454630135,
       "type": "link",
-      "title": "WhatsApp Channel Utama",
+      "title": "No Ryzz REAL!",
       "image": "",
-      "url": "https://whatsapp.com/channel/0029VbBiBeKElagwdrQ9c23j"
+      "url": "Wa.me/+62895321446723"
     },
     {
-      "id": 1794454335169,
-      "type": "banner",
-      "title": "",
-      "image": "https://raw.githubusercontent.com/ryzz-adminjb/LiRyzz/main/uploads/media_1794454319233.jpg",
+      "id": 1794454587481,
+      "type": "link",
+      "title": "Link Saluran",
+      "image": "",
       "url": "https://whatsapp.com/channel/0029Vb8MSNRD38CUmkWdJI3v"
+    },
+    {
+      "id": 1794454606100,
+      "type": "link",
+      "title": "Link Grub",
+      "image": "",
+      "url": "https://chat.whatsapp.com/IhelDsFWlJBCtfoImJLT3e?s=cl&p=a&iam=2"
     }
   ]
 }
