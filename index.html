@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links & Community</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#f4f4f6] text-gray-800 min-h-screen font-sans pb-16">
+
+    <!-- ========================================== -->
+    <!-- 1. TAMPILAN PUBLIK (MIRIP TYPELINK)        -->
+    <!-- ========================================== -->
+    <div id="publicView" class="max-w-[440px] mx-auto pt-10 px-4">
+        <!-- Header Profil -->
+        <div id="profileHeader" class="text-center mb-6">
+            <img id="displayAvatar" src="" alt="Avatar" class="w-20 h-20 rounded-full mx-auto object-cover border-2 border-white shadow mb-2 hidden">
+            <h1 id="displayName" class="text-lg font-bold text-gray-900"></h1>
+            <p id="displayBio" class="text-xs text-gray-500 mt-0.5"></p>
+        </div>
+
+        <!-- Container Blok (Gambar & Link) -->
+        <div id="publicBlocksContainer" class="space-y-3.5">
+            <div class="text-center py-12 text-gray-400 text-sm">Memuat halaman...</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-10">
+            <span class="inline-flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full text-[11px] text-gray-500 shadow-sm border">
+                <i class="fas fa-link text-gray-400"></i> Powered by Typelink Clone
+            </span>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. TAMPILAN ADMIN PANEL (GITHUB CMS)       -->
+    <!-- ========================================== -->
+    <div id="adminView" class="hidden max-w-xl mx-auto pt-14 px-4">
+        <div class="bg-white rounded-2xl shadow-lg border p-5 space-y-6">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div>
+                    <h2 class="text-lg font-bold text-gray-900">Admin Panel (GitHub CMS)</h2>
+                    <p class="text-xs text-gray-500">Perubahan langsung tersimpan ke repositori GitHub</p>
+                </div>
+                <button onclick="closeAdmin()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg font-medium">
+                    Tutup / Lihat Halaman
+                </button>
+            </div>
+
+            <!-- Konfigurasi GitHub Repo & Token -->
+            <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-blue-800 flex items-center gap-1.5">
+                    <i class="fab fa-github text-sm"></i> Koneksi GitHub
+                </h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-600">Username GitHub</label>
+                        <input type="text" id="ghOwner" placeholder="contoh: budi123" class="w-full mt-1 px-2.5 py-1.5 border rounded-lg text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-gray-600">Nama Repository</label>
+                        <input type="text" id="ghRepo" placeholder="contoh: biolink" class="w-full mt-1 px-2.5 py-1.5 border rounded-lg text-xs">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-medium text-gray-600">GitHub Personal Access Token (Classic / Fine-Grained)</label>
+                    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full mt-1 px-2.5 py-1.5 border rounded-lg text-xs">
+                </div>
+                <button onclick="saveGitHubConfig()" class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition font-medium">
+                    Simpan Koneksi di Browser Ini
+                </button>
+            </div>
+
+            <!-- Pengaturan Profil -->
+            <div class="space-y-3 border-b pb-5">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Pengaturan Header Profil</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Nama (Kosongkan jika tanpa judul)</label>
+                        <input type="text" id="inputName" class="w-full mt-1 px-3 py-2 border rounded-lg text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700">Bio Singkat</label>
+                        <input type="text" id="inputBio" class="w-full mt-1 px-3 py-2 border rounded-lg text-xs">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">URL Foto Profil (Atau Upload di bawah)</label>
+                    <div class="flex gap-2 mt-1">
+                        <input type="text" id="inputAvatar" placeholder="https://..." class="w-full px-3 py-2 border rounded-lg text-xs">
+                        <label class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-xs cursor-pointer shrink-0 border flex items-center gap-1">
+                            <i class="fas fa-upload"></i> Upload
+                            <input type="file" accept="image/*" class="hidden" onchange="uploadImageToGitHub(this, 'inputAvatar')">
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tambah Blok Baru -->
+            <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500">Tambah Konten (Link / Poster Gambar)</h3>
+                
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Tipe Konten</label>
+                    <select id="blockType" onchange="toggleFormFields()" class="w-full mt-1 px-3 py-2 border rounded-lg text-xs bg-white font-medium">
+                        <option value="banner">Poster / Banner Gambar (Seperti vivyflourite)</option>
+                        <option value="link">Kartu Tautan WhatsApp / Website</option>
+                    </select>
+                </div>
+
+                <div id="titleField" class="hidden">
+                    <label class="block text-xs font-medium text-gray-700">Teks Tautan</label>
+                    <input type="text" id="blockTitle" placeholder="whatsapp.com/channel/..." class="w-full mt-1 px-3 py-2 border rounded-lg text-xs">
+                </div>
+
+                <div id="imageField">
+                    <label class="block text-xs font-medium text-gray-700">Gambar Poster / Banner</label>
+                    <div class="flex gap-2 mt-1">
+                        <input type="text" id="blockImage" placeholder="URL Gambar atau klik Upload ->" class="w-full px-3 py-2 border rounded-lg text-xs">
+                        <label class="bg-gray-800 text-white hover:bg-gray-700 px-3 py-2 rounded-lg text-xs cursor-pointer shrink-0 flex items-center gap-1.5">
+                            <i class="fas fa-cloud-upload-alt"></i> <span id="uploadBtnText">Upload File</span>
+                            <input type="file" accept="image/*" class="hidden" onchange="uploadImageToGitHub(this, 'blockImage')">
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">URL Tujuan Saat Diklik (Opsional untuk gambar)</label>
+                    <input type="text" id="blockUrl" placeholder="https://chat.whatsapp.com/..." class="w-full mt-1 px-3 py-2 border rounded-lg text-xs">
+                </div>
+
+                <button onclick="addBlock()" class="w-full bg-gray-900 text-white text-xs font-semibold py-2.5 rounded-lg hover:bg-gray-800 transition">
+                    + Masukkan ke Daftar
+                </button>
+            </div>
+
+            <!-- Daftar Blok & Urutan -->
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Urutan Blok Saat Ini</h3>
+                <div id="adminBlocksList" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
+            </div>
+
+            <!-- Tombol Publish ke GitHub -->
+            <div class="pt-3 border-t">
+                <button id="publishBtn" onclick="publishToGitHub()" class="w-full bg-green-600 text-white font-bold text-sm py-3 rounded-xl shadow hover:bg-green-700 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-save"></i> SIMPAN & PUBLISH KE GITHUB
+                </button>
+                <p id="statusMsg" class="text-center text-xs mt-2 text-gray-500"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let appData = { profile: { name: "", bio: "", avatar: "" }, blocks: [] };
+
+        async function loadSiteData() {
+            try {
+                const res = await fetch(`./data.json?t=${Date.now()}`);
+                if (!res.ok) throw new Error("Gagal memuat data.json");
+                appData = await res.json();
+            } catch (err) {
+                console.warn("Menggunakan data fallback sementara:", err);
+            }
+            renderPublicView();
+            loadSavedGitHubConfig();
+            checkAdminAccess();
+        }
+
+        function checkAdminAccess() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('admin')) {
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('publicView').classList.add('hidden');
+                renderAdminPanel();
+            }
+        }
+
+        function renderPublicView() {
+            const nameEl = document.getElementById('displayName');
+            const bioEl = document.getElementById('displayBio');
+            const avatarEl = document.getElementById('displayAvatar');
+
+            nameEl.innerText = appData.profile.name || '';
+            bioEl.innerText = appData.profile.bio || '';
+            
+            if (appData.profile.avatar) {
+                avatarEl.src = appData.profile.avatar;
+                avatarEl.classList.remove('hidden');
+            } else {
+                avatarEl.classList.add('hidden');
+            }
+
+            const container = document.getElementById('publicBlocksContainer');
+            container.innerHTML = '';
+
+            if (!appData.blocks || appData.blocks.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-gray-400 text-xs">Belum ada konten.</div>`;
+                return;
+            }
+
+            appData.blocks.forEach(block => {
+                if (block.type === 'link') {
+                    let domain = 'link';
+                    try { domain = new URL(block.url).hostname.replace('www.', ''); } catch(e) {}
+                    const displayTitle = block.title || block.url.replace(/^https?:\/\//, '');
+
+                    container.innerHTML += `
+                        <a href="${block.url}" target="_blank" rel="noopener" class="block bg-white p-4 rounded-2xl shadow-sm border border-gray-200/80 hover:shadow-md hover:scale-[1.01] transition flex items-center justify-between group">
+                            <div class="flex items-center gap-3.5 overflow-hidden">
+                                <div class="w-11 h-11 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl shrink-0 border border-green-100">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div class="truncate">
+                                    <p class="font-semibold text-xs sm:text-sm text-gray-800 truncate group-hover:text-green-600 transition">${displayTitle}</p>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">${domain}</p>
+                                </div>
+                            </div>
+                            <div class="w-7 h-7 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-green-50 group-hover:text-green-600 transition shrink-0 ml-2">
+                                <i class="fas fa-arrow-up-right-from-square text-[10px]"></i>
+                            </div>
+                        </a>
+                    `;
+                } else if (block.type === 'banner') {
+                    const imgTag = `<img src="${block.image}" alt="Banner" loading="lazy" class="w-full rounded-2xl shadow-sm border border-gray-200/60 object-cover block">`;
+                    if (block.url && block.url.trim() !== '') {
+                        container.innerHTML += `
+                            <a href="${block.url}" target="_blank" rel="noopener" class="block relative group overflow-hidden rounded-2xl">
+                                ${imgTag}
+                                <div class="absolute bottom-3 right-3 bg-black/75 backdrop-blur-sm text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+                                    <i class="fas fa-hand-pointer text-xs"></i>
+                                </div>
+                            </a>
+                        `;
+                    } else {
+                        container.innerHTML += `<div class="overflow-hidden rounded-2xl">${imgTag}</div>`;
+                    }
+                }
+            });
+        }
+
+        function renderAdminPanel() {
+            document.getElementById('inputName').value = appData.profile.name || '';
+            document.getElementById('inputBio').value = appData.profile.bio || '';
+            document.getElementById('inputAvatar').value = appData.profile.avatar || '';
+
+            const list = document.getElementById('adminBlocksList');
+            list.innerHTML = '';
+
+            appData.blocks.forEach((block, idx) => {
+                const isBanner = block.type === 'banner';
+                const badge = isBanner 
+                    ? `<span class="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded">GAMBAR</span>`
+                    : `<span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded">LINK</span>`;
+                
+                const thumb = isBanner && block.image 
+                    ? `<img src="${block.image}" class="w-9 h-9 rounded object-cover border shrink-0">` 
+                    : `<div class="w-9 h-9 rounded bg-gray-200 flex items-center justify-center text-gray-500 shrink-0"><i class="fas fa-link text-xs"></i></div>`;
+
+                list.innerHTML += `
+                    <div class="flex items-center justify-between bg-gray-50 p-2.5 rounded-xl border text-xs">
+                        <div class="flex items-center gap-2.5 truncate pr-2">
+                            ${thumb}
+                            <div class="truncate">
+                                <div class="flex items-center gap-1.5">${badge} <span class="font-semibold text-gray-800 truncate">${block.title || 'Poster Gambar'}</span></div>
+                                <p class="text-[11px] text-gray-400 truncate mt-0.5">${block.url || 'Tanpa link klik'}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button onclick="moveBlock(${idx}, -1)" class="p-1.5 hover:bg-gray-200 rounded text-gray-600" title="Geser Naik"><i class="fas fa-chevron-up"></i></button>
+                            <button onclick="moveBlock(${idx}, 1)" class="p-1.5 hover:bg-gray-200 rounded text-gray-600" title="Geser Turun"><i class="fas fa-chevron-down"></i></button>
+                            <button onclick="deleteBlock(${block.id})" class="p-1.5 hover:bg-red-100 rounded text-red-600 ml-1" title="Hapus"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleFormFields() {
+            const type = document.getElementById('blockType').value;
+            document.getElementById('titleField').classList.toggle('hidden', type === 'banner');
+            document.getElementById('imageField').classList.toggle('hidden', type === 'link');
+        }
+
+        function addBlock() {
+            const type = document.getElementById('blockType').value;
+            const title = document.getElementById('blockTitle').value.trim();
+            const image = document.getElementById('blockImage').value.trim();
+            const url = document.getElementById('blockUrl').value.trim();
+
+            if (type === 'link' && !url) return alert('URL Tujuan wajib diisi untuk tipe Link!');
+            if (type === 'banner' && !image) return alert('Gambar wajib diisi/diupload untuk tipe Poster!');
+
+            appData.blocks.push({
+                id: Date.now(),
+                type,
+                title: type === 'link' ? (title || url) : '',
+                image: type === 'banner' ? image : '',
+                url
+            });
+
+            document.getElementById('blockTitle').value = '';
+            document.getElementById('blockImage').value = '';
+            document.getElementById('blockUrl').value = '';
+            renderAdminPanel();
+            renderPublicView();
+        }
+
+        function deleteBlock(id) {
+            appData.blocks = appData.blocks.filter(b => b.id !== id);
+            renderAdminPanel();
+            renderPublicView();
+        }
+
+        function moveBlock(index, dir) {
+            const target = index + dir;
+            if (target < 0 || target >= appData.blocks.length) return;
+            const temp = appData.blocks[index];
+            appData.blocks[index] = appData.blocks[target];
+            appData.blocks[target] = temp;
+            renderAdminPanel();
+            renderPublicView();
+        }
+
+        function saveGitHubConfig() {
+            const cfg = {
+                owner: document.getElementById('ghOwner').value.trim(),
+                repo: document.getElementById('ghRepo').value.trim(),
+                token: document.getElementById('ghToken').value.trim()
+            };
+            localStorage.setItem('ghCmsConfig', JSON.stringify(cfg));
+            alert('Koneksi GitHub disimpan di browser ini!');
+        }
+
+        function loadSavedGitHubConfig() {
+            const saved = JSON.parse(localStorage.getItem('ghCmsConfig'));
+            if (saved) {
+                document.getElementById('ghOwner').value = saved.owner || '';
+                document.getElementById('ghRepo').value = saved.repo || '';
+                document.getElementById('ghToken').value = saved.token || '';
+            } else {
+                const host = window.location.hostname;
+                if (host.endsWith('.github.io')) {
+                    document.getElementById('ghOwner').value = host.split('.')[0];
+                    const pathParts = window.location.pathname.split('/').filter(Boolean);
+                    if (pathParts.length > 0) document.getElementById('ghRepo').value = pathParts[0];
+                }
+            }
+        }
+
+        function utf8ToBase64(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        async function uploadImageToGitHub(fileInput, targetInputId) {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const owner = document.getElementById('ghOwner').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            const token = document.getElementById('ghToken').value.trim();
+
+            if (!owner || !repo || !token) {
+                alert('Isi Username, Nama Repo, dan Token GitHub terlebih dahulu di bagian atas Admin Panel!');
+                fileInput.value = '';
+                return;
+            }
+
+            const statusEl = document.getElementById('statusMsg');
+            statusEl.innerText = 'Mengupload gambar ke GitHub...';
+
+            const reader = new FileReader();
+            reader.onload = async function() {
+                const base64Content = reader.result.split(',')[1];
+                const ext = file.name.split('.').pop();
+                const fileName = `uploads/img_${Date.now()}.${ext}`;
+                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${fileName}`;
+
+                try {
+                    const res = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/vnd.github+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: `Upload gambar ${fileName}`,
+                            content: base64Content
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const errData = await res.json();
+                        throw new Error(errData.message || 'Gagal upload gambar');
+                    }
+
+                    const rawImageUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${fileName}`;
+                    document.getElementById(targetInputId).value = rawImageUrl;
+                    statusEl.innerText = 'Gambar berhasil diupload! Jangan lupa klik "+ Masukkan ke Daftar" lalu Publish.';
+                } catch (err) {
+                    alert('Error Upload: ' + err.message);
+                    statusEl.innerText = '';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function publishToGitHub() {
+            const owner = document.getElementById('ghOwner').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            const token = document.getElementById('ghToken').value.trim();
+
+            if (!owner || !repo || !token) {
+                return alert('Harap lengkapi Username, Nama Repo, dan Token GitHub!');
+            }
+
+            appData.profile.name = document.getElementById('inputName').value.trim();
+            appData.profile.bio = document.getElementById('inputBio').value.trim();
+            appData.profile.avatar = document.getElementById('inputAvatar').value.trim();
+
+            const btn = document.getElementById('publishBtn');
+            const statusEl = document.getElementById('statusMsg');
+            btn.disabled = true;
+            btn.innerText = 'Menyimpan ke GitHub...';
+
+            const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/data.json`;
+
+            try {
+                let sha = null;
+                const getRes = await fetch(apiUrl, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+                });
+                if (getRes.ok) {
+                    const fileData = await getRes.json();
+                    sha = fileData.sha;
+                }
+
+                const jsonString = JSON.stringify(appData, null, 2);
+                const bodyPayload = {
+                    message: 'Update data biolink dari Admin Panel',
+                    content: utf8ToBase64(jsonString)
+                };
+                if (sha) bodyPayload.sha = sha;
+
+                const putRes = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                if (!putRes.ok) {
+                    const err = await putRes.json();
+                    throw new Error(err.message || 'Gagal menyimpan data.json');
+                }
+
+                renderPublicView();
+                statusEl.innerText = 'Berhasil disimpan ke GitHub! Perubahan akan live di GitHub Pages dalam ~30-60 detik.';
+                alert('Berhasil dipublish ke GitHub!');
+            } catch (err) {
+                alert('Gagal Publish: ' + err.message);
+                statusEl.innerText = 'Gagal menyimpan: ' + err.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> SIMPAN & PUBLISH KE GITHUB';
+            }
+        }
+
+        function closeAdmin() {
+            window.history.replaceState({}, document.title, window.location.pathname);
+            document.getElementById('adminView').classList.add('hidden');
+            document.getElementById('publicView').classList.remove('hidden');
+            renderPublicView();
+        }
+
+        loadSiteData();
+    </script>
+</body>
+</html>
